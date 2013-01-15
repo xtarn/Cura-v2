@@ -9,7 +9,7 @@ class MyFrame(wx.Frame):
 	def __init__(self, parent, id, title):
 
 		noResize_frameStyle = wx.SYSTEM_MENU | wx.CLOSE_BOX | wx.CAPTION
-		wx.Frame.__init__(self, parent, id, title, size=(style.width*3.5, style.height*7+22), style=noResize_frameStyle)
+		wx.Frame.__init__(self, parent, id, title, size=(880, style.height*7+22), style=noResize_frameStyle)
 
 		self.panel = wx.Panel(self)
 
@@ -112,7 +112,7 @@ class MyFrame(wx.Frame):
 		sizer.Add(self.step6_heading)
 		self.step6_tab.SetSizer(sizer)
 
-		input_panel = wx.Panel(self.panel, size=(style.width*3.5, style.height*7))
+		input_panel = wx.Panel(self.panel, size=(880-style.width, 421))
 		input_panel.BackgroundColour = wx.WHITE
 
 		self.step1_panel = LoadPanel.LoadPanel(input_panel)
@@ -131,32 +131,31 @@ class MyFrame(wx.Frame):
 		self.next = NextButton(input_panel)
 		self.next.Bind(wx.EVT_BUTTON, self.onNext)
 
-		sizer = wx.BoxSizer()
-		sizer.Add(self.step1_panel)
-		sizer.Add(self.step2_panel)
-		sizer.Add(self.step3_panel)
-		sizer.Add(self.step4_panel)
-		sizer.Add(self.step5_panel)
-		sizer.Add(self.step6_panel)
-		input_panel.SetSizer(sizer)
+		self.sizer = wx.BoxSizer(wx.VERTICAL)
+		self.sizer.Add(self.step1_panel, flag=wx.EXPAND)
+		self.sizer.Add(self.step2_panel, flag=wx.EXPAND)
+		self.sizer.Add(self.step3_panel, flag=wx.EXPAND)
+		self.sizer.Add(self.step4_panel, flag=wx.EXPAND)
+		self.sizer.Add(self.step5_panel, flag=wx.EXPAND)
+		self.sizer.Add(self.step6_panel, flag=wx.EXPAND)
+		input_panel.SetSizer(self.sizer)
 
 		sizer = wx.GridBagSizer()
 		sizer.Add(self.heading_panel, (0,0))
 		sizer.Add(self.step1_tab, (1,0))
-		sizer.Add(self.step2_tab, (2,0))
+		sizer.Add(self.step2_tab , (2,0))
 		sizer.Add(self.step3_tab, (3,0))
 		sizer.Add(self.step4_tab, (4,0))
 		sizer.Add(self.step5_tab, (5,0))
 		sizer.Add(self.step6_tab, (6,0))
-		sizer.Add(input_panel, (0,1), span=(7,1))
+		sizer.Add(input_panel, (0,1), span=(8,1))
 
 		self.panel.SetSizerAndFit(sizer)
 
-		self.step2_heading.SetForegroundColour(style.accent2)
-		self.step3_heading.SetForegroundColour(style.accent2)
-		self.step4_heading.SetForegroundColour(style.accent2)
-		self.step5_heading.SetForegroundColour(style.accent2)
-		#self.step6_heading.SetForegroundColour(style.accent2)
+		# self.step2_heading.SetForegroundColour(style.accent2)
+		# self.step3_heading.SetForegroundColour(style.accent2)
+		# self.step4_heading.SetForegroundColour(style.accent2)
+		# self.step5_heading.SetForegroundColour(style.accent2)
 		
 
 	def onTabClick(self, event, tab=None): 
@@ -225,6 +224,7 @@ class MyFrame(wx.Frame):
 			self.next.Hide()
 			self.next.onMouseLeave(None)
 
+		self.sizer.Layout()
 		tab.BackgroundColour = style.accent1
 		self.Refresh()
 	

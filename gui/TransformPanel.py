@@ -98,6 +98,11 @@ class TransformPanel(wx.Panel):
 		reset = GenericButton(self, 'Reset All')
 		reset.Bind(wx.EVT_BUTTON, self.onReset)
 
+		#3d preview window
+		preview_window = wx.Panel(self, size=(380,320))
+		preview_window.BackgroundColour = wx.BLUE
+		wx.StaticText(preview_window, label='3D Preview Window here')
+
 		# window settings
 		sizer = wx.GridBagSizer()
 		sizer.AddSpacer((30,20), (0,0))
@@ -117,8 +122,11 @@ class TransformPanel(wx.Panel):
 		sizer.Add(scale_panel, (11,1))
 		sizer.AddSpacer((1,10), (12,1))
 
-		sizer.AddSpacer((1,30), (13,1))
+		#sizer.AddSpacer((1,30), (13,1))
 		sizer.Add(reset, (14,1))
+
+		sizer.AddSpacer((30,1), (1,2))
+		sizer.Add(preview_window, (1,3), span=(15,1))
 
 		self.SetSizer(sizer)
 		self.Fit()
