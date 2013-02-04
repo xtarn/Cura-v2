@@ -5,6 +5,7 @@ from gui.customControls import NextButton
 from gui import LoadPanel, TransformPanel, SettingsPanel, AdvancedPanel, PrintPanel, StatusPanel
 import style
 
+
 class MyFrame(wx.Frame):
 	def __init__(self, parent, id, title):
 
@@ -151,11 +152,12 @@ class MyFrame(wx.Frame):
 		sizer.Add(input_panel, (0,1), span=(8,1))
 
 		self.panel.SetSizerAndFit(sizer)
-
 		# self.step2_heading.SetForegroundColour(style.accent2)
 		# self.step3_heading.SetForegroundColour(style.accent2)
 		# self.step4_heading.SetForegroundColour(style.accent2)
 		# self.step5_heading.SetForegroundColour(style.accent2)
+
+		self.filename = None
 		
 
 	def onTabClick(self, event, tab=None): 
@@ -173,7 +175,6 @@ class MyFrame(wx.Frame):
 				return
 			elif tab == self.step6_tab and self.step6_heading.ForegroundColour == style.accent2:
 				return
-
 
 		self.step1_tab.BackgroundColour = style.mouse_off_colour
 		self.step2_tab.BackgroundColour = style.mouse_off_colour

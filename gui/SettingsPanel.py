@@ -34,10 +34,10 @@ class SettingsPanel(wx.Panel):
 		high_heading.SetFont(small_font)
 		ultra_heading.SetFont(small_font)
 
-		self.low_button = ToggleSwitch(quality_panel)
-		self.med_button = ToggleSwitch(quality_panel)
-		self.high_button = ToggleSwitch(quality_panel)
-		self.ultra_button = ToggleSwitch(quality_panel)
+		self.low_button = ToggleSwitch(quality_panel, 'A fast, low quality print that will lack strength and have a poor surface finish. Use when printing a draft model for maximum speed and minimum cost.')
+		self.med_button = ToggleSwitch(quality_panel, 'A regular quality print. Has a better surface finish and a denser infill than fast quality. Appropriate for most models, particularly large ones.')
+		self.high_button = ToggleSwitch(quality_panel, 'A high quality print with good surface finish and a strong infill. Good for small models and models that require high dimensional accuracy.')
+		self.ultra_button = ToggleSwitch(quality_panel, 'A very high quality print. Has a honeycomb infill pattern for extra strength and a very fine surface finish. Use only on final models (VERY slow!)')
 
 		self.low_button.Bind(wx.EVT_CHECKBOX, self.onQualityClick)
 		self.med_button.Bind(wx.EVT_CHECKBOX, self.onQualityClick)
@@ -76,10 +76,11 @@ class SettingsPanel(wx.Panel):
 		hollow_heading.SetFont(small_font)
 		solid_heading.SetFont(small_font)
 
-		self.support_button = ToggleSwitch(optional_panel)
+		self.support_button = ToggleSwitch(optional_panel, 'Use when the object has a lot of overhang.')
 		self.hollow_button = ToggleSwitch(optional_panel)
 		self.solid_button = ToggleSwitch(optional_panel)
 
+		self.support_button.Bind(wx.EVT_CHECKBOX, self.onSupportClick)
 		self.solid_button.Bind(wx.EVT_CHECKBOX, self.onDensityClick)
 		self.hollow_button.Bind(wx.EVT_CHECKBOX, self.onDensityClick)
 
@@ -122,20 +123,41 @@ class SettingsPanel(wx.Panel):
 		self.Fit()
 
 	def onQualityClick(self, event):
+
+		button = event.GetEventObject()
+		if button.isSelected() == False:
+			button.set()
+			return
+
 		self.low_button.clear()
 		self.med_button.clear()
 		self.high_button.clear()
 		self.ultra_button.clear()
 
-		button = event.GetEventObject()
 		button.set()
+
+		advanced = self.GetParent().GetParent().GetParent().step4_panel
+		advanced.doReset(None)
+
+	def onSupportClick(self, event):
+		advanced = self.GetParent().GetParent().GetParent().step4_panel
+		advanced.doReset(None)
 
 	def onDensityClick(self, event):
-		self.hollow_button.clear()
-		self.solid_button.clear()
-
 		button = event.GetEventObject()
-		button.set()
+		if button.isSelected() == False:
+			button.clear()
+		else:
+			self.hollow_button.clear()
+			self.solid_button.clear()
+			button.set()
+
+		advanced = self.GetParent().GetParent().GetParent().step4_panel
+		advanced.doReset(None)
+
+	def getSelectedMaterial(self):
+		return self.material_panel.selected
+
 
 class MaterialPanel(wx.Panel):
 	def __init__(self, parent):
@@ -211,7 +233,16 @@ class MaterialPanel(wx.Panel):
 			self.mat_labels1[i].SetForegroundColour(style.accent2)
 			self.mat_labels2[i].SetForegroundColour(style.accent2)
 			if self.mat_panels[i] == clicked:
+				self.selected = self.mat_list[i]
+
 				self.mat_panels[i].BackgroundColour = self.mat_list[i][2]
+
+				advanced = self.GetParent().GetParent().GetParent().GetParent().step4_panel
+				settings = {}
+				settings['print_temperature'] = self.mat_list[i][3]
+				settings['fillament_diameter'] = self.mat_list[i][4]
+				advanced.doSettings(settings)
+
 
 				avg_col = (int(self.mat_list[i][2][1:3], 16) + int(self.mat_list[i][2][3:5],16) + int(self.mat_list[i][2][5:7],16))/3
 				if avg_col < 255/2:

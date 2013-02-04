@@ -1,30 +1,50 @@
 import wx
 import style
 
+from gui.customControls import GenericButton
+from util import meshLoader
+
 class LoadPanel(wx.Panel):
 	def __init__(self, parent):
 		wx.Panel.__init__(self, parent, size=(style.width*3+1, style.height*7+1))
 
-		heading_font = wx.Font(16, wx.SWISS, wx.NORMAL, wx.LIGHT)
+		load_model = GenericButton(self, label='Load Model\t\t\t')
+		load_model.Bind(wx.EVT_BUTTON, self.onLoad)
 
-		load_stl_heading = wx.StaticText(self, label='Load STL')
-		load_batch_heading = wx.StaticText(self, label='Load Batch Project')
-		load_online_heading = wx.StaticText(self, label='Load From Thingiverse')
+		load_gcode = GenericButton(self, label='Load Gcode\t\t\t')
+		#load_gcode.Bind
 
-		load_stl_heading.SetFont(heading_font)
-		load_stl_heading.SetForegroundColour(style.accent1)
+		load_web = GenericButton(self, label='Load From Thingiverse\t')
+		#load_web.Bind
 
-		load_batch_heading.SetFont(heading_font)
-		load_batch_heading.SetForegroundColour(style.accent1)
+		#load_settings = GenericButton(self, label='Load Custom Settings\t')
+		#load_settings.Bind
 
-		load_online_heading.SetFont(heading_font)
-		load_online_heading.SetForegroundColour(style.accent1)
+		load_gcode.disable()
+		load_web.disable()
 
 
 		sizer = wx.GridBagSizer()
 		sizer.AddSpacer((30,20), (0,0))
-		sizer.Add(load_stl_heading, (1,1))
-		sizer.Add(load_batch_heading, (3, 1))
-		sizer.Add(load_online_heading, (5,1))
+		sizer.Add(load_model, (1,1))
+		sizer.AddSpacer((0,20), (2,1))
+		sizer.Add(load_gcode, (3,1))
+		sizer.AddSpacer((0,20), (4,1))
+		sizer.Add(load_web, (5,1))
+		#sizer.AddSpacer((0,20), (6,1))
+		#sizer.Add(load_settings, (7,1))
 
 		self.SetSizerAndFit(sizer)
+
+	def onLoad(self, event):
+
+		dlg = wx.FileDialog(self, "Open file to print", style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
+		dlg.SetWildcard(meshLoader.wildcardFilter())
+
+		if dlg.ShowModal() == wx.ID_OK:
+			frame = self.GetParent().GetParent().GetParent()
+			frame.filename = dlg.GetPath() 
+			transform = frame.step2_panel
+			transform.load(frame.filename)
+			frame.onNext(None)
+		dlg.Destroy()

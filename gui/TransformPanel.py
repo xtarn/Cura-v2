@@ -2,6 +2,7 @@ import wx
 import style
 
 from customControls import ToggleSwitch, GenericButton
+from gui import preview3d
 
 class TransformPanel(wx.Panel):
 	def __init__(self, parent):
@@ -34,6 +35,9 @@ class TransformPanel(wx.Panel):
 		self.xy_button = ToggleSwitch(swap_panel)
 		self.yz_button = ToggleSwitch(swap_panel)
 
+		self.xy_button.Bind(wx.EVT_CHECKBOX, self.onSwap)
+		self.yz_button.Bind(wx.EVT_CHECKBOX, self.onSwap)
+
 		sizer = wx.GridBagSizer()
 		sizer.AddSpacer((20,1), (0,0))
 		sizer.AddSpacer((100,1), (0,1))
@@ -63,6 +67,10 @@ class TransformPanel(wx.Panel):
 		self.y_button = ToggleSwitch(mirror_panel)
 		self.z_button = ToggleSwitch(mirror_panel)
 
+		self.x_button.Bind(wx.EVT_CHECKBOX, self.onMirror)
+		self.y_button.Bind(wx.EVT_CHECKBOX, self.onMirror)
+		self.z_button.Bind(wx.EVT_CHECKBOX, self.onMirror)
+
 		sizer = wx.GridBagSizer()
 		sizer.AddSpacer((20,1), (0,0))
 		sizer.AddSpacer((100,1), (0,1))
@@ -83,8 +91,10 @@ class TransformPanel(wx.Panel):
 		#scale panel
 		scale_panel = wx.Panel(self)
 
-		self.scale = wx.SpinCtrl(scale_panel)
-		self.scale.SetValue(1.0)
+		self.scale = wx.TextCtrl(scale_panel)
+		self.scale.SetValue('1.0')
+
+		self.scale.Bind(wx.EVT_TEXT, self.onScale)
 
 		sizer = wx.GridBagSizer()
 		sizer.AddSpacer((20,1), (0,0))
@@ -99,9 +109,8 @@ class TransformPanel(wx.Panel):
 		reset.Bind(wx.EVT_BUTTON, self.onReset)
 
 		#3d preview window
-		preview_window = wx.Panel(self, size=(380,320))
-		preview_window.BackgroundColour = wx.BLUE
-		wx.StaticText(preview_window, label='3D Preview Window here')
+		self.preview = preview3d.previewPanel(self)
+		#self.preview.loadModelFiles(['/Users/ProChef/Desktop/Cura-v2/images/UltimakerRobot_support.stl'])
 
 		# window settings
 		sizer = wx.GridBagSizer()
@@ -126,11 +135,30 @@ class TransformPanel(wx.Panel):
 		sizer.Add(reset, (14,1))
 
 		sizer.AddSpacer((30,1), (1,2))
-		sizer.Add(preview_window, (1,3), span=(15,1))
+		sizer.Add(self.preview, (2,3), span=(15,1))
 
 		self.SetSizer(sizer)
 		self.Fit()
 
+	def onSwap(self, event):
+		self.preview.flipxy = self.xy_button.isSelected()
+		self.preview.flipyz = self.yz_button.isSelected()
+		self.preview.updateModelTransform()
+
+	def onMirror(self, event):
+		self.preview.mirrorx = self.x_button.isSelected()
+		self.preview.mirrory = self.y_button.isSelected()
+		self.preview.mirrorz = self.z_button.isSelected()
+		self.preview.updateModelTransform()
+
+	def onScale(self, event):
+		try:
+			scale = float(self.scale.GetValue())
+			if scale == 0:
+				return
+			self.preview.OnScale(scale)
+		except:
+			return
 
 	def onReset(self, event):
 		self.xy_button.clear()
@@ -138,4 +166,11 @@ class TransformPanel(wx.Panel):
 		self.x_button.clear()
 		self.y_button.clear()
 		self.z_button.clear()
-		self.scale.SetValue(1)
+		self.scale.SetValue('1.0')
+
+		self.onSwap(None)
+		self.onMirror(None)
+		self.onScale(None)
+
+	def load(self, filepath):
+		self.preview.loadModelFiles([filepath])
