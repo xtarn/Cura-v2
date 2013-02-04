@@ -1,0 +1,4 @@
+//NumJobs TotalTime Status Progress
+0	0	Idle	0
+
+//Name Time Fil(m) Fil(g) Mat Cost Owner ID
