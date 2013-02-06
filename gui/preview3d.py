@@ -16,7 +16,7 @@ except:
 	hasOpenGLlibs = False
 
 from gui import opengl
-
+from util import profile
 from util import meshLoader
 from util import util3d
 
@@ -58,6 +58,7 @@ class previewPanel(wx.Panel):
 
 	def OnScale(self, scale):
 		self.scale = scale
+		profile.putProfileSetting('model_scale', scale)
 		self.glCanvas.Refresh()
 	
 	def OnScaleMax(self, e):
@@ -127,6 +128,14 @@ class previewPanel(wx.Panel):
 		mirrorZ = self.mirrorz
 		swapXZ = self.flipxy
 		swapYZ = self.flipyz
+
+		profile.putProfileSetting('model_scale', self.scale)
+		profile.putProfileSetting('model_rotate_base', '0')
+		profile.putProfileSetting('flip_x', mirrorX)
+		profile.putProfileSetting('flip_y', mirrorY)
+		profile.putProfileSetting('flip_z', mirrorZ)
+		profile.putProfileSetting('swap_xz', swapXZ)
+		profile.putProfileSetting('swap_yz', swapYZ)
 
 		for obj in self.objectList:
 			if obj.mesh == None:

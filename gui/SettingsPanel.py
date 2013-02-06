@@ -158,6 +158,34 @@ class SettingsPanel(wx.Panel):
 	def getSelectedMaterial(self):
 		return self.material_panel.selected
 
+	def GetSettings(self):
+		if self.low_button.isSelected():
+			q = 'Low'
+		elif self.med_button.isSelected():
+			q = 'Regular'
+		elif self.high_button.isSelected():
+			q = 'High'
+		elif self.ultra_button.isSelected():
+			q = 'Ultra'
+
+		m = ' '.join(self.getSelectedMaterial()[0:1])
+
+		s = ''
+		if self.hollow_button.isSelected():
+			s = 'Print hollow'
+		elif self.solid_button.isSelected():
+			s = 'Print solid'
+
+		if self.support_button.isSelected() and s:
+			s = s + ' with support'
+		elif self.support_button.isSelected():
+			s = 'Print support'
+
+		if not s:
+			s = 'None'
+
+		return (q, m, s)
+
 
 class MaterialPanel(wx.Panel):
 	def __init__(self, parent):

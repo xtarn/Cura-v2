@@ -8,6 +8,8 @@ if sys.version_info[0] < 3:
 else:
 	import configparser as ConfigParser
 
+from util import resources
+from util import version
 
 #########################################################
 ## Default settings when none are found.
@@ -148,7 +150,7 @@ G92 E0
 }
 preferencesDefaultSettings = {
 	'startMode': 'Simple',
-	'lastFile': '',#os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'resources', 'example', 'UltimakerRobot_support.stl')),
+	'lastFile': os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'resources', 'example', 'UltimakerRobot_support.stl')),
 	'machine_width': '205',
 	'machine_depth': '205',
 	'machine_height': '200',
@@ -198,8 +200,8 @@ def getDefaultProfilePath():
 		#If we have a frozen python install, we need to step out of the library.zip
 		if hasattr(sys, 'frozen'):
 			basePath = os.path.normpath(os.path.join(basePath, ".."))
-	# else:
-	# 	basePath = os.path.expanduser('~/.cura/%s' % version.getVersion(False))
+	else:
+		basePath = os.path.expanduser('~/.cura/%s' % version.getVersion(False))
 	if not os.path.isdir(basePath):
 		os.makedirs(basePath)
 	return os.path.join(basePath, 'current_profile.ini')
@@ -322,8 +324,8 @@ def getPreferencePath():
 		#If we have a frozen python install, we need to step out of the library.zip
 		if hasattr(sys, 'frozen'):
 			basePath = os.path.normpath(os.path.join(basePath, ".."))
-	# else:
-	# 	basePath = os.path.expanduser('~/.cura/%s' % version.getVersion(False))
+	else:
+		basePath = os.path.expanduser('~/.cura/%s' % version.getVersion(False))
 	if not os.path.isdir(basePath):
 		os.makedirs(basePath)
 	return os.path.join(basePath, 'preferences.ini')
@@ -551,8 +553,8 @@ def getPluginBasePaths():
 	ret = []
 	if platform.system() != "Windows":
 		ret.append(os.path.expanduser('~/.cura/plugins/'))
-	# if platform.system() == "Darwin" and hasattr(sys, 'frozen'):
-	# 	ret.append(os.path.normpath(os.path.join(resources.resourceBasePath, "Cura/plugins")))
+	if platform.system() == "Darwin" and hasattr(sys, 'frozen'):
+		ret.append(os.path.normpath(os.path.join(resources.resourceBasePath, "Cura/plugins")))
 	else:
 		ret.append(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'plugins')))
 	return ret

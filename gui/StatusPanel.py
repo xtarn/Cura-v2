@@ -122,7 +122,6 @@ class StatusPanel(wx.Panel):
 
 		if status == '230 Login successful.':
 			self.colourise()
-			print 'Connected!'
 			self.refreshInfo(printserv)
 		else:
 			wx.CallLater(5000, self.Connect)
@@ -211,7 +210,7 @@ class StatusPanel(wx.Panel):
 
 		printserv.closeConnection()
 
-		wx.CallLater(5000, self.Connect)
+		wx.CallLater(2000, self.Connect)
 
 	def minToString(self, min):
 		hrs = min/60

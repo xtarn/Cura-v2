@@ -1,4 +1,6 @@
 //NumJobs TotalTime Status Progress
-0	0	Idle	0
+2	0	Idle	0
 
 //Name Time Fil(m) Fil(g) Mat Cost Owner ID
+cube	0	0.00	0.02	Black	0.00	tim-uqsrc.ceit.uq.edu.au	a42b9d6a	
+cube	0	0.00	0.02	Yellow	0.00	tim-uqsrc.ceit.uq.edu.au	c082a2a9	

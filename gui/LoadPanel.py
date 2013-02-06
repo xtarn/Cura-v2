@@ -3,6 +3,7 @@ import style
 
 from gui.customControls import GenericButton
 from util import meshLoader
+from util import profile
 
 class LoadPanel(wx.Panel):
 	def __init__(self, parent):
@@ -31,8 +32,6 @@ class LoadPanel(wx.Panel):
 		sizer.Add(load_gcode, (3,1))
 		sizer.AddSpacer((0,20), (4,1))
 		sizer.Add(load_web, (5,1))
-		#sizer.AddSpacer((0,20), (6,1))
-		#sizer.Add(load_settings, (7,1))
 
 		self.SetSizerAndFit(sizer)
 
@@ -44,6 +43,8 @@ class LoadPanel(wx.Panel):
 		if dlg.ShowModal() == wx.ID_OK:
 			frame = self.GetParent().GetParent().GetParent()
 			frame.filename = dlg.GetPath() 
+			frame.step5_panel.ClearPrintSummary()
+			profile.putPreference('lastFile', frame.filename)
 			transform = frame.step2_panel
 			transform.load(frame.filename)
 			frame.onNext(None)
